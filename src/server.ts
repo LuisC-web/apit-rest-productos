@@ -1,8 +1,11 @@
 import express from "express";
-import cors, { CorsOptions } from "cors";
+import db from "./config/db";
 import colors from "colors";
-import { db } from "./db"; // Asegúrate de importar correctamente tu conexión a la base de datos
-
+import products from "./routes/products";
+import swaggerUi from "swagger-ui-express";
+import swaggerSpecs from "./config/swagger";
+import cors, { CorsOptions } from "cors";
+import morgan from "morgan";
 async function dbConnection() {
   try {
     await db.authenticate();
@@ -18,7 +21,6 @@ async function dbConnection() {
 dbConnection();
 
 const server = express();
-
 const corsOptions: CorsOptions = {
   origin: function (origin, callback) {
     if (!origin || origin === process.env.FRONTEND_URL) {
@@ -31,11 +33,10 @@ const corsOptions: CorsOptions = {
 
 server.use(cors(corsOptions));
 server.use(express.json());
-
-// Define tus rutas aquí
-// server.use("/api/products", products);
-
-const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+server.use(morgan("dev"));
+server.use("/api/products", products);
+server.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+server.get("/api", (req, res) => {
+  res.json({ msg: "Desde api" });
 });
+export default server;
