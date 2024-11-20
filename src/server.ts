@@ -23,11 +23,7 @@ dbConnection();
 const server = express();
 const corsOptions: CorsOptions = {
   origin: function (origin, callback) {
-    if (!origin || origin === process.env.FRONTEND_URL) {
-      callback(null, true);
-    } else {
-      callback(new Error("Error de CORS"));
-    }
+    callback(null, true);
   },
 };
 
@@ -36,7 +32,5 @@ server.use(express.json());
 server.use(morgan("dev"));
 server.use("/api/products", products);
 server.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
-server.get("/api", (req, res) => {
-  res.json({ msg: "Desde api" });
-});
+
 export default server;
