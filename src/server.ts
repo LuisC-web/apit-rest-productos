@@ -6,7 +6,6 @@ import swaggerUi from "swagger-ui-express";
 import swaggerSpecs from "./config/swagger";
 import cors, { CorsOptions } from "cors";
 import morgan from "morgan";
-import { log } from "console";
 async function dbConnection() {
   try {
     await db.authenticate();
@@ -24,12 +23,14 @@ dbConnection();
 const server = express();
 const corsOptions: CorsOptions = {
   origin: function (origin, callback) {
-    console.log(origin);
-
-    if (origin === process.env.FRONTEND_URL) {
-      callback(null, true);
-    } else {
-      callback(new Error("Error de CROS"));
+    try {
+      if (origin === process.env.FRONTEND_URL) {
+        callback(null, true);
+      } else {
+        callback(new Error("Error de CROS"));
+      }
+    } catch (error) {
+      console.log(error);
     }
   },
 };
