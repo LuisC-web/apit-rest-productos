@@ -5,6 +5,6 @@ const port = process.env.PORT || 4000;
 
 server.listen(port, () => {
   console.log(
-    colors.magenta(`Servidor escuchando en http://localhost:${port}`)
+    colors.magenta(`Servidor escuchando en ${process.env.FRONTEND_URL}${port}`)
   );
 });
